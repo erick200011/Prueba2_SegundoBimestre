@@ -13,4 +13,5 @@ public class JavaCrud {
     private JButton buscarButton;
     private JTextField textID;
     private JLabel textMensaje;
+    private JButton sello;
 }
