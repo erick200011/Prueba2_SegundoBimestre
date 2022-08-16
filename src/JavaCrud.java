@@ -157,7 +157,7 @@ public class JavaCrud {
             String sql="select * from productos where pid=?";
             PreparedStatement pst=conn.prepareStatement(sql);
             pst.setString(1,id);
-            //System.out.println(sql);
+            System.out.println(sql);
 
 
             ResultSet rs=pst.executeQuery();
@@ -210,7 +210,6 @@ public class JavaCrud {
             Connection conn= DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
             Statement stmt= conn.createStatement();
             String sql="update productos set PNombre=?, PCiudad=?,PPrecio=?,PCantidad=? where pid=?";
-            //PNombre,PCiudad,PPrecio,PCantidad
             PreparedStatement pst=conn.prepareStatement(sql);
             pst.setString(1,nombre);
             pst.setString(2,ciudad);
