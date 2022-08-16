@@ -4,85 +4,86 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class Login extends  JDialog{
+public class Login extends JavaCrud{
     private JPanel loginPanel;
     private JButton logInButton;
     private JButton cancelButton;
     private JTextField emailTF;
     private JPasswordField passwordTF;
     private JPanel Main;
-    public User user;
+    Connection con;
+    PreparedStatement pst;
 
-    public Login(JFrame parent) {
+    public Login() {
+        Connect();
         logInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email=emailTF.getText();
-                String contraseña=String.valueOf(passwordTF.getPassword());
-                user=getAuthenticationUser(email,contraseña);
-                if (user!=null){
-                    dispose();
+                ValidarUsuario();
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-                }
-                else{
-                    JOptionPane.showMessageDialog(
-                            Login.this,"email o password incorrectos",
-                            "intente nuevamente",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
             }
         });
     }
 
-    public Login() {
+    public void Connect() {
+        final String DB_URL = "jdbc:mysql://localhost/misproductos?serverTimezone=UTC";
+        final String USERNAME = "root";
+        final String PASSWORD = "";
 
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            Statement stmt = conn.createStatement();
+
+            System.out.println("Conexion exitosa");
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("SQL incorrecto");
+
+        }
     }
-
-
-    private User getAuthenticationUser(String email, String password){
-        User user =null;
-
+    public void ValidarUsuario(){
+        int resultado=0;
+        String usuario;
+        usuario=emailTF.getText();
         final String DB_URL="jdbc:mysql://localhost/misproductos?serverTimezone=UTC";
         final String USERNAME="root";
         final String PASSWORD="";
-        JavaCrud javaCrud=new JavaCrud();
 
-        try{
-            Connection conn= DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
-            Statement stmt= conn.createStatement();
-            String sql="SELECT * FROM user WHERE Email=? AND Contraseña=?";
-            PreparedStatement preparedStatement=conn.prepareStatement(sql);
-            preparedStatement.setString(1,email);
-            preparedStatement.setString(2,password);
-            System.out.println("conexion ok");
-            ResultSet resultSet=preparedStatement.executeQuery();
+        try {
 
-            if(resultSet.next()){
-                user=new User();
-                user.email=resultSet.getString("email");
-                user.password=resultSet.getString("password");
+            Connection con= DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
+            String contraseña=String.valueOf(passwordTF.getPassword());
+            String sql="select*from user where user='"+usuario+"'and contraseña='"+contraseña+"'";
+            Statement st=con.createStatement();
+            ResultSet rs=st.executeQuery(sql);
+            if(rs.next()){
+                resultado=1;
+                if (resultado==1){
+                    mostrarFrame();
+                }
+                System.out.println("Conecion Exitosa");
+            }else {
 
+                JOptionPane.showMessageDialog(null,"Error de usario/contraseña");
             }
 
-            stmt.close();
-            conn.close();
+        }catch (Exception e){
 
-        }catch(Exception e){
-            System.out.println("error de...");
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error");
         }
-
-        return user;
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("JavaCrud");
+        JFrame frame=new JFrame("Login");
         frame.setContentPane(new Login().Main);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
-
-
 }

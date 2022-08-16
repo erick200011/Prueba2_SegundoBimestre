@@ -17,6 +17,7 @@ public class JavaCrud {
     private JTextField textID;
     private JLabel textMensaje;
     private JButton sello;
+    private JPanel JavaXD;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("JavaCrud");
@@ -40,38 +41,28 @@ public class JavaCrud {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Delete();
 
-            }
-        });
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        limpiarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Limpiar();
-            }
-        });
-
-        buscarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Buscar();
             }
         });
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Update();
+
             }
         });
-        deleteButton.addActionListener(new ActionListener() {
+
+        limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Delete();
+                Limpiar();
+            }
+        });
+        buscarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Buscar();
             }
         });
     }
@@ -154,7 +145,7 @@ public class JavaCrud {
         try{
             Connection conn= DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
             Statement stmt= conn.createStatement();
-            String sql="select * from productos where pid=?";
+            String sql="select * from productos where ProductoID=?";
             PreparedStatement pst=conn.prepareStatement(sql);
             pst.setString(1,id);
             System.out.println(sql);
@@ -238,7 +229,7 @@ public class JavaCrud {
         try{
             Connection conn= DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
             Statement stmt= conn.createStatement();
-            String sql="delete from productos where pid=?";
+            String sql="delete from productos where ProductoID=?";
             PreparedStatement pst=conn.prepareStatement(sql);
             pst.setString(1,borrarid);
 
@@ -252,5 +243,13 @@ public class JavaCrud {
             System.out.println("SQL incorrecto");
 
         }
+
+    }
+    public void mostrarFrame(){
+        JFrame frame = new JFrame("JavaCrud");
+        frame.setContentPane(new JavaCrud().Main);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
